@@ -1,0 +1,13 @@
+{
+    "name": "haa-plugin/helene-abiassy-academy",
+    "description": "A custom WordPress plugin for managing the Helene Abiassy Academy.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+      "psr-4": {
+        "HAAPlugin\\": "src/"
+      }
+    },
+    "require": {}
+  }
+  
