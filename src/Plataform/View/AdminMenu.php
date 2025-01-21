@@ -6,8 +6,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-use HAAPlugin\Plataform\Components\ListElement;
-use HAAPlugin\Plataform\Components\ListRow;
+use HAAPlugin\Plataform\View\ExportFilter;
 
 /**
  * AdminMenu class
@@ -110,21 +109,8 @@ class AdminMenu
         echo '<p>This is the settings page content.</p>';
 
         // Define headers
-        $headers = ['ID', 'Name', 'Email'];
-        
-        // Define rows with data and attributes
-        $rows = [
-            new ListRow(['ID' => 1, 'Name' => 'John Doe', 'Email' => 'john@example.com'], ['class' => 'highlight']),
-            new ListRow(['ID' => 2, 'Name' => 'Jane Smith', 'Email' => 'jane@example.com'], ['class' => 'bold']),
-            new ListRow(['ID' => 3, 'Name' => 'Sam Brown', 'Email' => 'sam@example.com'], []),
-        ];
-        
-        // Create the list
-        $list = new ListElement($headers, $rows, ['class' => 'table table-striped']);
-        
-        // Render the list
-        echo $list->render();
-        
+
+       echo ExportFilter::get_instance()->render_export_filter();
 
     }
 }

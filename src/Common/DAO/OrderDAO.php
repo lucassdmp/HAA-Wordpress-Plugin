@@ -61,7 +61,7 @@ class OrderDAO extends BaseDAO
      */
     public function getOrdersByStatus(string $status): array
     {
-        $query = $this->db_instance->prepare("SELECT * FROM {$this->ordersTable} WHERE status = %s", $status);
+        $query = $this->db_instance->prepare("SELECT * FROM {$this->db_instance->ordersTable} WHERE status = %s", $status);
         $results = $this->db_instance->get_results($query);
 
         return $this->mapToOrderDTOArray($results);
@@ -76,7 +76,7 @@ class OrderDAO extends BaseDAO
      */
     public function getOrderById(int $id): ?OrderDTO
     {
-        $query = $this->db_instance->prepare("SELECT * FROM {$this->ordersTable} WHERE ID = %d", $id);
+        $query = $this->db_instance->prepare("SELECT * FROM {$this->db_instance->ordersTable} WHERE ID = %d", $id);
         $result = $this->db_instance->get_row($query);
 
         return $this->mapToOrderDTO($result);
@@ -91,7 +91,7 @@ class OrderDAO extends BaseDAO
      */
     public function getOrdersByBillingEmail(string $billingEmail): array
     {
-        $query = $this->db_instance->prepare("SELECT * FROM {$this->ordersTable} WHERE billing_email = %s", $billingEmail);
+        $query = $this->db_instance->prepare("SELECT * FROM {$this->db_instance->ordersTable} WHERE billing_email = %s", $billingEmail);
         $results = $this->db_instance->get_results($query);
 
         return $this->mapToOrderDTOArray($results);
@@ -106,7 +106,7 @@ class OrderDAO extends BaseDAO
      */
     public function getOrdersByCurrency(string $currency): array
     {
-        $query = $this->db_instance->prepare("SELECT * FROM {$this->ordersTable} WHERE currency = %s", $currency);
+        $query = $this->db_instance->prepare("SELECT * FROM {$this->db_instance->ordersTable} WHERE currency = %s", $currency);
         $results = $this->db_instance->get_results($query);
 
         return $this->mapToOrderDTOArray($results);
@@ -121,7 +121,7 @@ class OrderDAO extends BaseDAO
      */
     public function getOrdersByPaymentMethod(string $paymentMethod): array
     {
-        $query = $this->db_instance->prepare("SELECT * FROM {$this->ordersTable} WHERE payment_method = %s", $paymentMethod);
+        $query = $this->db_instance->prepare("SELECT * FROM {$this->db_instance->ordersTable} WHERE payment_method = %s", $paymentMethod);
         $results = $this->db_instance->get_results($query);
 
         return $this->mapToOrderDTOArray($results);

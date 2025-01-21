@@ -74,6 +74,10 @@ class HeleneAbiassyAcademy
         define("HAA_EXPORT_ORDER_PAGE_MENU_TITLE", "Export WC Orders");
         define("HAA_EXPORT_ORDER_PAGE_SLUG", "export-wc-order");
 
+        define("HAA_ASSETS_PATH", plugin_dir_path(__FILE__)."../../assets/");
+        define("HAA_JS_PATH", HAA_ASSETS_PATH."js/");
+        define("HAA_CSS_PATH", HAA_ASSETS_PATH."css/");
+
     }
 
     /**

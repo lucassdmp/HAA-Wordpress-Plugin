@@ -1,6 +1,6 @@
 <?php
 
-namespace HAAPlugin\Business;
+namespace HAAPlugin\Plataform\Business;
 
 use HAAPlugin\Common\DAO\OrderDAO;
 use HAAPlugin\Common\Entity\OrderDTO;

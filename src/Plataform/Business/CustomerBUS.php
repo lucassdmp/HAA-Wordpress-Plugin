@@ -1,6 +1,6 @@
 <?php
 
-namespace HAAPlugin\Business;
+namespace HAAPlugin\Plataform\Business;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -65,5 +65,15 @@ class CustomerBUS
     public function getCustomersByDisplayName(string $displayName): array
     {
         return $this->customerDAO->getCustomersByDisplayName($displayName);
+    }
+
+    /**
+     * Get all customers who have made any order.
+     *
+     * @return CustomerDTO[] An array of CustomerDTO objects.
+     */
+    public function getAllCustomerWithOrders(): array
+    {
+        return $this->customerDAO->getAllCustomerWithOrders();
     }
 }

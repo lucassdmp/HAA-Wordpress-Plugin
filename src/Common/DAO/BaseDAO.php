@@ -21,40 +21,11 @@ class BaseDAO {
     protected $db_instance;
 
     /**
-     * Store the singleton instance
-     * 
-     * @var BaseDAO|null
-     */
-    private static $instance = null;
-
-    /**
-     * Private constructor to prevent direct instantiation.
+     * Public constructor to prevent direct instantiation.
      * Initializes the $wpdb instance.
      */
-    private function __construct() {
+    public function __construct() {
         global $wpdb;
         $this->db_instance = $wpdb;
     }
-
-    /**
-     * Get the singleton instance of the BaseDAO class
-     * 
-     * @return BaseDAO
-     */
-    public static function get_instance() {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    /**
-     * Prevent cloning of the object
-     */
-    public function __clone() {}
-
-    /**
-     * Prevent unserializing the object
-     */
-    public function __wakeup() {}
 }

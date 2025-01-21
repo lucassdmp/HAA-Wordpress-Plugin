@@ -35,7 +35,7 @@ class CustomerDAO extends BaseDAO
      */
     private function __construct()
     {
-        $BaseDAO__instace = BaseDAO::get_instance();
+        parent::__construct();
         $this->usersTable = $this->db_instance->users;
     }
 
@@ -92,6 +92,18 @@ class CustomerDAO extends BaseDAO
     public function getCustomersByDisplayName(string $displayName): array
     {
         $query = $this->db_instance->prepare("SELECT * FROM {$this->usersTable} WHERE display_name = %s", $displayName);
+        $results = $this->db_instance->get_results($query);
+
+        return $this->mapToCustomerDTOArray($results);
+    }
+
+    /**
+     * Get all customer with orders.
+     * 
+     * @return CustomerDTO[] An array of CustomerDTO objects.
+     */
+    public function getAllCustomerWithOrders(){
+        $query = "SELECT u.* FROM {$this->usersTable} u INNER JOIN {$this->db_instance->prefix}wc_orders o ON o.customer_id = u.ID GROUP BY u.ID;";
         $results = $this->db_instance->get_results($query);
 
         return $this->mapToCustomerDTOArray($results);
