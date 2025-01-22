@@ -21,7 +21,7 @@ class OrderDAO extends BaseDAO
      *
      * @var string
      */
-    private $ordersTable;
+    private string $ordersTable;
 
     /**
      * Store the singleton instance
@@ -35,7 +35,7 @@ class OrderDAO extends BaseDAO
      */
     private function __construct()
     {
-        $BaseDAO__instace = BaseDAO::get_instance();
+        parent::__construct();
         $this->ordersTable = $this->db_instance->prefix . 'wc_orders';
     }
 
@@ -128,6 +128,17 @@ class OrderDAO extends BaseDAO
     }
 
     /**
+     * Get all orders
+     * 
+     * @return OrderDTO[] An array of OrderDTO objects.
+     */
+    public function getAllOrders(){
+        $results = $this->db_instance->get_results("SELECT * FROM {$this->ordersTable} Order by 1 desc");
+
+        return $this->mapToOrderDTOArray($results);
+    }
+
+    /**
      * Private mapper function to map a single order object to an OrderDTO.
      *
      * @param \stdClass|null $orderObj The database order object.
@@ -141,12 +152,14 @@ class OrderDAO extends BaseDAO
         }
 
         return new OrderDTO(
-            (int) $orderObj->ID,
-            (string) $orderObj->billing_email,
-            (string) $orderObj->currency,
-            (string) $orderObj->payment_method,
-            (string) $orderObj->status,
-            [],
+            ID: (int) $orderObj->id,
+            billing_email: (string) $orderObj->billing_email,
+            currency: (string) $orderObj->currency,
+            totalAmount: floatval( $orderObj->total_amount),
+            status: (string) $orderObj->status,
+            items: [],
+            payment_method: (string) $orderObj->payment_method,
+            payment_method_title: (string)$orderObj->payment_method_title
         );
     }
 

@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 }
 
 use HAAPlugin\Plataform\View\ExportFilter;
+use HAAPlugin\Plataform\View\OrderList;
 
 /**
  * AdminMenu class
@@ -105,12 +106,15 @@ class AdminMenu
      */
     public function show_export_admin_section()
     {
-        echo '<h1>Settings</h1>';
-        echo '<p>This is the settings page content.</p>';
-
+        echo '<h1>Export WC Orders</h1>';
         // Define headers
 
-       echo ExportFilter::get_instance()->render_export_filter();
+       ExportFilter::get_instance()->render();
+       $OrderList = OrderList::get_instance()->GetOrderList();
+       $exportButton = new ExportOrderListButton();
 
+       echo $exportButton->render();
+       echo $exportButton->get_download_script($OrderList);
+       $OrderList->render();
     }
 }

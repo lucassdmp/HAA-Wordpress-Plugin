@@ -44,6 +44,36 @@ class ListElement
         $this->attributes = $attributes;
     }
 
+      /**
+     * Get the headers of the list.
+     *
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Get the rows of the list.
+     *
+     * @return ListRow[]
+     */
+    public function getRows(): array
+    {
+        return $this->rows;
+    }
+
+    /**
+     * Get the attributes of the list.
+     *
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
     /**
      * Generate the HTML for the list.
      *
@@ -119,14 +149,16 @@ class ListElement
         $attributesString = $this->buildRowAttributes($row->getAttributes());
         $html = "<tr$attributesString>";
 
-        foreach ($this->headers as $key) {
-            $value = $row->getData()[$key] ?? '';
+        // Loop through row data in the same order as headers
+        foreach ($this->headers as $index => $header) {
+            $value = $row->getData()[$index] ?? ''; // Use index-based access
             $html .= sprintf('<td>%s</td>', htmlspecialchars($value));
         }
 
         $html .= '</tr>';
         return $html;
     }
+
 
     /**
      * Build attributes for a <tr> element as a string.
@@ -142,4 +174,6 @@ class ListElement
         }
         return $attributesString;
     }
+
+
 }

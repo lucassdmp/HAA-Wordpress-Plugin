@@ -3,7 +3,7 @@
 namespace HAAPlugin\Common\Entity;
 
 use DateTime;
-use HAAPlugin\Business\CustomerBUS;
+use HAAPlugin\Plataform\Business\CustomerBUS;
 use HAAPlugin\Common\Entity\CustomerDTO;
 
 if (!defined('ABSPATH')) {
@@ -30,9 +30,9 @@ class OrderDTO
      * Represents the customer who placed the order.
      * This is a reference to the CustomerDTO object that contains customer details.
      * 
-     * @var CustomerDTO
+     * @var string|null
      */
-    public CustomerDTO $Customer;
+    public ?string $Customer;
 
     /**
      * The currency in which the order was made.
@@ -81,6 +81,22 @@ class OrderDTO
     public string $origin;
 
     /**
+     * The WC Order payment method.
+     * This is a string representing the payment_method type.
+     * 
+     * @var string
+     */
+    public string $payment_method;
+
+    /**
+     * The WC Order payment method displayname.
+     * This is a string representing the payment_method display name.
+     * 
+     * @var string
+     */
+    public string $payment_method_title;
+
+    /**
      * Constructor for creating an OrderDTO object.
      *
      * @param int $orderId The order ID (WC Order ID).
@@ -89,7 +105,8 @@ class OrderDTO
      * @param float $totalAmount The total amount paid for the order.
      * @param string $status The order status (e.g., 'processing', 'completed').
      * @param array $items An array of OrderItemDTO objects representing items in the order.
-     * @param DateTime $orderDate The date and time when the order was processed.
+     * @param string $payment_method The WC order payment method
+     * @param string $payment_method_title The display name for the payment_method
      */
     public function __construct(
         int $ID,
@@ -97,15 +114,17 @@ class OrderDTO
         string $currency,
         string $totalAmount,
         string $status,
-        array $items
+        array $items,
+        string $payment_method,
+        string $payment_method_title
     ) {
-        $customer_bus = new CustomerBUS();
-
         $this->ID = $ID;
-        $this->Customer = $customer_bus->getCustomerByEmail($billing_email);
+        $this->Customer = $billing_email;
         $this->currency = $currency;
         $this->totalAmount = floatval($totalAmount);
         $this->status = $status;
         $this->items = $items;
+        $this->payment_method = $payment_method;
+        $this->payment_method_title = $payment_method_title;
     }
 }

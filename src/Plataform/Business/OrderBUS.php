@@ -90,4 +90,14 @@ class OrderBUS
     {
         return $this->orderDAO->getOrdersByPaymentMethod($paymentMethod);
     }
+
+
+    /**
+     * Get orders by payment method.
+     * 
+     * @return OrderDTO[] An array of OrderDTO objects.
+     */
+    public function getAllOrders(){
+        return $this->orderDAO->getAllOrders();
+    }
 }

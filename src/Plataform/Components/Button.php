@@ -18,7 +18,7 @@ class Button
      *
      * @var string
      */
-    private $label;
+    protected $label;
 
     /**
      * Type attribute for the <button> element.
@@ -26,7 +26,7 @@ class Button
      *
      * @var string
      */
-    private $type;
+    protected $type;
 
     /**
      * Additional attributes for the <button> element.
@@ -34,7 +34,7 @@ class Button
      *
      * @var array
      */
-    private $attributes;
+    protected $attributes;
 
     /**
      * Constructor to initialize button properties.
@@ -71,7 +71,7 @@ class Button
      *
      * @return string The string of HTML attributes.
      */
-    private function buildAttributes(): string
+    protected function buildAttributes(): string
     {
         $attributesString = '';
         foreach ($this->attributes as $key => $value) {

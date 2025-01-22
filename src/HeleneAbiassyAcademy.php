@@ -74,9 +74,9 @@ class HeleneAbiassyAcademy
         define("HAA_EXPORT_ORDER_PAGE_MENU_TITLE", "Export WC Orders");
         define("HAA_EXPORT_ORDER_PAGE_SLUG", "export-wc-order");
 
-        define("HAA_ASSETS_PATH", plugin_dir_path(__FILE__)."../../assets/");
-        define("HAA_JS_PATH", HAA_ASSETS_PATH."js/");
-        define("HAA_CSS_PATH", HAA_ASSETS_PATH."css/");
+        define("HAA_ASSETS_PATH", plugin_dir_path(__FILE__) . "../../assets/");
+        define("HAA_JS_PATH", HAA_ASSETS_PATH . "js/");
+        define("HAA_CSS_PATH", HAA_ASSETS_PATH . "css/");
 
     }
 
@@ -86,6 +86,8 @@ class HeleneAbiassyAcademy
     private function add_hooks()
     {
         add_action("admin_menu", [$this, 'initialize_admin_menu']);
+
+        $this->initialize_bootstrap_header();
     }
 
     /**
@@ -95,5 +97,35 @@ class HeleneAbiassyAcademy
     {
         $admin_menu = AdminMenu::get_instance();
     }
+
+    /**
+     * Add Bootstrap CSS to the WordPress front end and admin areas.
+     */
+    public function initialize_bootstrap_header()
+    {
+        // Enqueue Bootstrap CSS for the front end
+        add_action('wp_enqueue_scripts', function () {
+            wp_enqueue_style(
+                'bootstrap-css',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
+                [],
+                '5.1.3',
+                'all'
+            );
+        });
+
+        // Enqueue Bootstrap CSS for the admin area
+        add_action('admin_enqueue_scripts', function () {
+            wp_enqueue_style(
+                'bootstrap-css-admin',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
+                [],
+                '5.1.3',
+                'all'
+            );
+        });
+    }
+
+
 }
 

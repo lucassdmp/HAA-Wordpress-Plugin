@@ -94,7 +94,7 @@ class ExportFilter
      * 
      * @return string The HTML for the export filter.
      */
-    public function render_export_filter(): string
+    public function render(): string
     {
         $CustomerBUS = new CustomerBUS();
         // Define options for the dropdowns
