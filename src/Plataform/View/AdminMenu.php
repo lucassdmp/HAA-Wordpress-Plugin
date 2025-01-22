@@ -55,18 +55,26 @@ class AdminMenu
      * 
      * @return void
      */
-    private function initiatiate_main_admin_menu()
-    {
-        add_menu_page(
-            HAA_ADMIN_PAGE_TITLE,    // Page title
-            HAA_ADMIN_MENU_TITLE,    // Menu title
-            'manage_options',        // Capability required
-            HAA_ADMIN_SLUG,          // Menu slug
-            [$this, 'show_main_admin_menu_content'], // Callback function for content
-            'dashicons-admin-generic', // Icon
-            3 // Position of the menu item
-        );
-    }
+private function initiatiate_main_admin_menu()
+{
+    // Path to your SVG file
+    $svg_url = 'https://www.heleneabiassi.academy/wp-content/uploads/2024/04/ICONS-EBOOK-HELENE-02.svg';
+    // Get the SVG content
+    $svg_content = file_get_contents($svg_url);
+    // Encode the SVG to Base64
+    $base64_svg = base64_encode($svg_content);
+    
+    // Use the Base64 encoded SVG as the menu icon
+    add_menu_page(
+        HAA_ADMIN_PAGE_TITLE,    // Page title
+        HAA_ADMIN_MENU_TITLE,    // Menu title
+        'manage_options',        // Capability required
+        HAA_ADMIN_SLUG,          // Menu slug
+        [$this, 'show_main_admin_menu_content'], // Callback function for content
+        'data:image/svg+xml;base64,' . $base64_svg, // Base64 encoded SVG as icon
+        3 // Position of the menu item
+    );
+}
 
     /**
      * Initializes the order export admin section as a submenu.
@@ -84,6 +92,7 @@ class AdminMenu
             HAA_EXPORT_ORDER_PAGE_SLUG,   // Submenu slug
             [$this, 'show_export_admin_section'] // Callback function for content
         );
+        
     }
 
     /**
@@ -94,8 +103,7 @@ class AdminMenu
      */
     public function show_main_admin_menu_content()
     {
-        echo '<h1>Welcome to My Plugin!</h1>';
-        echo '<p>This is the main menu page content.</p>';
+        echo '<h1>Helene Abiassy Academy!</h1>';
     }
 
     /**
@@ -111,10 +119,11 @@ class AdminMenu
 
        ExportFilter::get_instance()->render();
        $OrderList = OrderList::get_instance()->GetOrderList();
-       $exportButton = new ExportOrderListButton();
+       $exportButton = new ExportOrderListButton("Export Order", ['class' => 'btn btn-primary']);
 
        echo $exportButton->render();
+       echo $OrderList->render();
        echo $exportButton->get_download_script($OrderList);
-       $OrderList->render();
+       
     }
 }

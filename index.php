@@ -4,7 +4,7 @@
  * Plugin Name: Helene Abiassy - Plugin
  * Plugin URI: https://www.heleneabiassi.academy/
  * Description: Plugin para o site Helene Abiassy Academy
- * Version: 1.0.0.1
+ * Version: 1.0.0.4
  * Author: VPTEC
  */
 
