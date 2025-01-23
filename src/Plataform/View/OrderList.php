@@ -14,6 +14,8 @@ class OrderList
     private $headers;
     private OrderBUS $OrderBus;
 
+    public array $orders;
+
     private function __construct()
     {
         $this->headers = ["ID", "Billing Address", "Customer Name", "Currency", "Amount", "Payment Method", "Country"];
@@ -35,11 +37,11 @@ class OrderList
 
     public function GetOrderList()
     {
-        $all_orders = $this->OrderBus->getAllOrders();
+        $this->orders = $this->OrderBus->getAllOrders();
 
         $attributes = $this->buildTableAttributes();
 
-        $rows = $this->mapOrdersToListArray($all_orders, $this->headers);
+        $rows = $this->mapOrdersToListArray($this->orders, $this->headers);
 
         $list = new ListElement($this->headers, $rows, $attributes);
 
@@ -55,8 +57,8 @@ class OrderList
     {
         return [
             'id' => self::$order_list_table_id,
-            'class' => 'table table-striped table-hover',
-            'data-role' => 'order-list', // Example custom attribute
+            'class' => 'table table-striped table-hover table-responsive',
+            'data-role' => 'order-list', 
         ];
     }
 
@@ -103,7 +105,7 @@ class OrderList
                 }
             }
 
-            $return_array[$order->ID] = new ListRow($mappedOrder);
+            $return_array[$order->ID] = new ListRow($mappedOrder, [], $order);
         }
 
         return $return_array;

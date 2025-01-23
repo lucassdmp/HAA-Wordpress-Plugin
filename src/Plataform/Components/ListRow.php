@@ -22,16 +22,19 @@ class ListRow
      */
     private $attributes;
 
+    public object $origin;
+
     /**
      * Constructor to initialize row properties.
      *
      * @param array $data The row's data.
      * @param array $attributes Optional attributes for the <tr> element.
      */
-    public function __construct(array $data, array $attributes = [])
+    public function __construct(array $data, array $attributes = [], object $entity)
     {
         $this->data = $data;
         $this->attributes = $attributes;
+        $this->origin = $entity;
     }
 
     /**

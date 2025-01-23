@@ -129,4 +129,31 @@ class OrderDTO
         $this->payment_method_title = $payment_method_title;
         $this->billing_data = $billing_data;
     }
+
+    public function toCSV()
+    {
+        $csvData = [
+            $this->ID,
+            $this->Customer,
+            $this->currency,
+            $this->totalAmount,
+            $this->status,
+            $this->payment_method,
+            $this->payment_method_title
+        ];
+    
+        if ($this->billing_data) {
+            $csvData = array_merge($csvData, [
+                $this->billing_data->customer_name,
+                $this->billing_data->customer_billing_address,
+                $this->billing_data->customer_billing_city,
+                $this->billing_data->customer_billing_state,
+                $this->billing_data->customer_postal_code,
+                $this->billing_data->customer_billing_country
+            ]);
+        }
+    
+        return $csvData;
+    }
+    
 }

@@ -2,6 +2,7 @@
 
 namespace HAAPlugin\Common\Core;
 
+use HAAPlugin\Common\Entity\OrderDTO;
 use HAAPlugin\Plataform\Components\ListElement;
 
 class ExportListElement
@@ -43,7 +44,7 @@ class ExportListElement
      * @return string The URL of the exported CSV file.
      * @throws \Exception If an error occurs during file creation.
      */
-    public function exportToCSV(ListElement $list_element, $filename = 'orders.csv')
+    public function exportToCSV(ListElement $list_element, $filename = 'orders.csv', $use_headers = false)
     {
         $file_path = $this->export_dir . $filename;
 
@@ -53,15 +54,24 @@ class ExportListElement
         }
 
         try {
-            fputcsv($file, $list_element->getHeaders());
+            if($use_headers)
+                fputcsv($file, $list_element->getHeaders());
 
             foreach ($list_element->getRows() as $row) {
-                fputcsv($file, $row->getData());
+                $data = $this->getCSVRowFroObject($row->origin);
+                fputcsv($file, $data);
             }
         } finally {
             fclose($file);
         }
 
         return $this->export_url . $filename;
+    }
+
+    private function getCSVRowFroObject(object $object){
+        if($object instanceof OrderDTO){
+            return $object->toCSV();
+        }
+        return [];
     }
 }
