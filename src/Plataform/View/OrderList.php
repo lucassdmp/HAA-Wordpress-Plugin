@@ -16,7 +16,7 @@ class OrderList
 
     private function __construct()
     {
-        $this->headers = ["ID", "Billing Address", "Currency", "Amount", "Payment Method"];
+        $this->headers = ["ID", "Billing Address", "Customer Name", "Currency", "Amount", "Payment Method", "Country"];
         $this->OrderBus = new OrderBUS();
     }
 
@@ -74,7 +74,6 @@ class OrderList
 
         foreach ($all_orders as $order) {
             $mappedOrder = [];
-
             foreach ($headers as $header) {
                 switch ($header) {
                     case "ID":
@@ -82,6 +81,12 @@ class OrderList
                         break;
                     case "Billing Address":
                         $mappedOrder[] = $order->Customer ?? 'N/A';
+                        break;
+                    case "Customer Name":
+                        $mappedOrder[] = $order->billing_data->customer_name;
+                        break;
+                    case "Country":
+                        $mappedOrder[] = $order->billing_data->customer_billing_country;
                         break;
                     case "Currency":
                         $mappedOrder[] = $order->currency;

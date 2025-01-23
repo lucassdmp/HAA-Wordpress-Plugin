@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 }
 
 use HAAPlugin\Common\Entity\OrderDTO;
+use HAAPlugin\Common\Entity\OrderMetaDTO;
 
 /**
  * Class OrderDAO
@@ -22,6 +23,7 @@ class OrderDAO extends BaseDAO
      * @var string
      */
     private string $ordersTable;
+    private string $ordersMetaTable;
 
     /**
      * Store the singleton instance
@@ -37,6 +39,7 @@ class OrderDAO extends BaseDAO
     {
         parent::__construct();
         $this->ordersTable = $this->db_instance->prefix . 'wc_orders';
+        $this->ordersMetaTable = $this->db_instance->prefix . 'wc_orders_meta';
     }
 
     /**
@@ -61,7 +64,7 @@ class OrderDAO extends BaseDAO
      */
     public function getOrdersByStatus(string $status): array
     {
-        $query = $this->db_instance->prepare("SELECT * FROM {$this->db_instance->ordersTable} WHERE status = %s", $status);
+        $query = $this->db_instance->prepare("SELECT * FROM {$this->ordersTable} WHERE status = %s", $status);
         $results = $this->db_instance->get_results($query);
 
         return $this->mapToOrderDTOArray($results);
@@ -76,10 +79,12 @@ class OrderDAO extends BaseDAO
      */
     public function getOrderById(int $id): ?OrderDTO
     {
-        $query = $this->db_instance->prepare("SELECT * FROM {$this->db_instance->ordersTable} WHERE ID = %d", $id);
+        $query = $this->db_instance->prepare("SELECT * FROM {$this->ordersTable} WHERE ID = %d", $id);
         $result = $this->db_instance->get_row($query);
 
-        return $this->mapToOrderDTO($result);
+        $meta = $this->db_instance->get_results($this->db_instance->prepare("SELECT * FROM {$this->ordersMetaTable} where order_id = %d AND meta_key = %s", $result->id, '_shipping_address_index'));
+
+        return $this->mapToOrderDTO($result, new OrderMetaDTO($meta));
     }
 
     /**
@@ -132,34 +137,38 @@ class OrderDAO extends BaseDAO
      * 
      * @return OrderDTO[] An array of OrderDTO objects.
      */
-    public function getAllOrders(){
+    public function getAllOrders()
+    {
         $results = $this->db_instance->get_results("SELECT * FROM {$this->ordersTable} Order by 1 desc");
 
-        return $this->mapToOrderDTOArray($results);
+        $metas = $this->getAllMetaFromOrder($results);
+
+        return $this->mapToOrderDTOArray($results, $metas);
     }
 
     /**
      * Private mapper function to map a single order object to an OrderDTO.
      *
      * @param \stdClass|null $orderObj The database order object.
+     * @param ?OrderMetaDTO $orderObjMeta represents an basic order meta attributes.
      * 
      * @return OrderDTO|null The mapped OrderDTO or null if the object is null.
      */
-    private function mapToOrderDTO($orderObj): ?OrderDTO
+    private function mapToOrderDTO($orderObj, $orderObjMeta = null): ?OrderDTO
     {
         if (!$orderObj) {
             return null;
         }
-
         return new OrderDTO(
             ID: (int) $orderObj->id,
             billing_email: (string) $orderObj->billing_email,
             currency: (string) $orderObj->currency,
-            totalAmount: floatval( $orderObj->total_amount),
+            totalAmount: floatval($orderObj->total_amount),
             status: (string) $orderObj->status,
             items: [],
             payment_method: (string) $orderObj->payment_method,
-            payment_method_title: (string)$orderObj->payment_method_title
+            payment_method_title: (string) $orderObj->payment_method_title,
+            billing_data:  $orderObjMeta ?? null
         );
     }
 
@@ -167,11 +176,49 @@ class OrderDAO extends BaseDAO
      * Private helper to map an array of order objects to an array of OrderDTOs.
      *
      * @param array $orderObjs The database order objects.
+     * @param array $metas The meta data for each order in a dict array.
      * 
      * @return OrderDTO[] An array of OrderDTOs.
      */
-    private function mapToOrderDTOArray(array $orderObjs): array
+    private function mapToOrderDTOArray(array $orderObjs, array $metas = []): array
     {
-        return array_map([$this, 'mapToOrderDTO'], $orderObjs);
+        $ListOrOrders = array();
+        foreach($orderObjs as $order){
+            if(isset($metas[$order->id])){
+                $ListOrOrders[] = $this->mapToOrderDTO($order, new OrderMetaDTO($metas[$order->id][0]->meta_value));
+            }else{
+                $ListOrOrders[] = $this->mapToOrderDTO($order );
+            }
+        }
+
+        return $ListOrOrders;
+    }
+
+    /**
+     * TODO: FIX THE CODE BELOW FOR GENERIC GET AND MOVE TO OrderMETADAO
+     * Private helper to map an array of order objects to an array of OrderMetaDTO.
+     *
+     * @param array $orderObjs The database order objects.
+     * 
+     * @return OrderMetaDTO Object mapped from array of attributes.
+     */
+    private function mapToOrderMetaDTO($orderMetaObj)
+    {
+        $shippingAddressIndex = null;
+        foreach ($orderMetaObj as $row) {
+            if ($row->meta_key === '_shipping_address_index') {
+                $shippingAddressIndex = $row->meta_value;
+                break;
+            }
+        }
+        return new OrderMetaDTO($shippingAddressIndex);
+    }
+
+    private function getAllMetaFromOrder($orderArray){
+        $meta = array();
+        foreach($orderArray as $order){
+            $meta[$order->id] = $this->db_instance->get_results($this->db_instance->prepare("SELECT * FROM {$this->ordersMetaTable} where order_id = %d AND meta_key = %s", $order->id, '_shipping_address_index'));
+        }
+        return $meta;
     }
 }

@@ -52,7 +52,7 @@ class OrderItemDTO
      */
     public function __construct(int $itemId, string $name, int $quantity, float $price)
     {
-        $this->itemId = $itemId;
+        $this->ID = $itemId;
         $this->name = $name;
         $this->quantity = $quantity;
         $this->price = $price;

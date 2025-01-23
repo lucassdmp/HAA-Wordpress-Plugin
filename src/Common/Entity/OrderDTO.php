@@ -3,8 +3,7 @@
 namespace HAAPlugin\Common\Entity;
 
 use DateTime;
-use HAAPlugin\Plataform\Business\CustomerBUS;
-use HAAPlugin\Common\Entity\CustomerDTO;
+use HAAPlugin\Common\Entity\OrderMetaDTO;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -12,101 +11,102 @@ if (!defined('ABSPATH')) {
 
 /**
  * Data Transfer Object (DTO) for an Order.
- * 
- * This class represents a data structure for an order, used to transfer
- * order-related data between layers in an application. It includes information
- * about the customer, order details, payment status, and items in the order.
+ *
+ * This class encapsulates order-related data for transferring information
+ * between layers of the application. It includes details about the order,
+ * customer, payment, items, and billing information.
  */
 class OrderDTO
 {
     /**
      * The unique identifier for the order (WC Order ID).
-     * 
+     *
      * @var int
      */
     public int $ID;
 
     /**
-     * Represents the customer who placed the order.
-     * This is a reference to the CustomerDTO object that contains customer details.
-     * 
+     * The email of the customer who placed the order.
+     *
      * @var string|null
      */
     public ?string $Customer;
 
     /**
-     * The currency in which the order was made.
-     * This is an Enum value representing the currency (USD, BRL, EUR).
-     * 
+     * The currency of the order (e.g., 'USD', 'BRL', 'EUR').
+     *
      * @var string
      */
     public string $currency;
 
     /**
-     * The total amount paid for the order in the selected currency.
-     * 
+     * The total amount paid for the order.
+     *
      * @var float
      */
     public float $totalAmount;
 
     /**
-     * The status of the order.
-     * This is an Enum value representing the order status (e.g., processing, completed).
-     * 
+     * The current status of the order (e.g., 'processing', 'completed').
+     *
      * @var string
      */
     public string $status;
 
     /**
-     * A list of items included in the order.
-     * This is an array of OrderItemDTO objects.
-     * 
+     * An array of items included in the order.
+     *
      * @var OrderItemDTO[]
      */
     public array $items;
 
     /**
-     * The exact time the order was processed.
-     * 
+     * The date and time the order was processed.
+     *
      * @var DateTime
      */
     public DateTime $orderDate;
 
     /**
-     * The country of origin for the order.
-     * This is a string representing the country code or name where the order was made.
-     * 
+     * The country where the order originated.
+     *
      * @var string
      */
     public string $origin;
 
     /**
-     * The WC Order payment method.
-     * This is a string representing the payment_method type.
-     * 
+     * The payment method used for the order (e.g., 'credit_card', 'paypal').
+     *
      * @var string
      */
     public string $payment_method;
 
     /**
-     * The WC Order payment method displayname.
-     * This is a string representing the payment_method display name.
-     * 
+     * The display name for the payment method (e.g., 'Credit Card', 'PayPal').
+     *
      * @var string
      */
     public string $payment_method_title;
 
     /**
+     * The metadata for Billing data.
+     *
+     * @var OrderMetaDTO|null
+     */
+    public ?OrderMetaDTO $billing_data;
+
+    /**
      * Constructor for creating an OrderDTO object.
      *
-     * @param int $orderId The order ID (WC Order ID).
-     * @param string $billing_email The customer email for the order.
-     * @param string $currency The currency in which the order was made (e.g., 'USD', 'BRL', 'EUR').
-     * @param float $totalAmount The total amount paid for the order.
-     * @param string $status The order status (e.g., 'processing', 'completed').
-     * @param array $items An array of OrderItemDTO objects representing items in the order.
-     * @param string $payment_method The WC order payment method
-     * @param string $payment_method_title The display name for the payment_method
+     * @param int $ID The unique order ID (WC Order ID).
+     * @param string $billing_email The email address of the customer.
+     * @param string $currency The currency in which the order was made (e.g., 'USD', 'BRL').
+     * @param string $totalAmount The total amount paid for the order.
+     * @param string $status The status of the order (e.g., 'processing', 'completed').
+     * @param array $items An array of OrderItemDTO objects representing the items in the order.
+     * @param string $payment_method The payment method used for the order.
+     * @param string $payment_method_title The display name of the payment method.
+     * @param OrderMetaDTO $billing_data A string containing billing data, with fields separated by double spaces.
      */
     public function __construct(
         int $ID,
@@ -116,7 +116,8 @@ class OrderDTO
         string $status,
         array $items,
         string $payment_method,
-        string $payment_method_title
+        string $payment_method_title,
+        ?OrderMetaDTO $billing_data = null
     ) {
         $this->ID = $ID;
         $this->Customer = $billing_email;
@@ -126,5 +127,6 @@ class OrderDTO
         $this->items = $items;
         $this->payment_method = $payment_method;
         $this->payment_method_title = $payment_method_title;
+        $this->billing_data = $billing_data;
     }
 }
